@@ -106,13 +106,11 @@ def benchmark_vamp(
     time_list_vamp = []
     vamp_results = []
     for i in range(n_sample):
-        plan_settings.rng_skip_iterations = i
-        ts = time.time()
-        res = planner_func(q_start, q_goal, env, plan_settings)
-        elapsed = (
-            time.time() - ts
-        )  # use time.time() function because plainmp uses it to measure time
-        time_list_vamp.append(elapsed * 1000)
+        sampler = vamp_module.halton()
+        time.time()
+        res = planner_func(q_start, q_goal, env, plan_settings, sampler)
+        elapsed = res.nanoseconds
+        time_list_vamp.append(elapsed * 0.000001)  # nano to milli
         assert res.solved
         vamp_results.append(np.array(res.path.numpy()))
     return time_list_vamp
