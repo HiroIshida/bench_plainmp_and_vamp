@@ -107,6 +107,8 @@ def benchmark_vamp(
     vamp_results = []
     for i in range(n_sample):
         sampler = vamp_module.halton()
+        sampler.reset()
+        sampler.skip(i)
         time.time()
         res = planner_func(q_start, q_goal, env, plan_settings, sampler)
         elapsed = res.nanoseconds
