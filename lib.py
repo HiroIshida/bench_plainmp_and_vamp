@@ -150,7 +150,11 @@ def plot_plainmp_vs_vamp(
     print(f"plainmp median: {plainmp_median} ms")
     vamp_median = np.median(time_list_vamp)
     print(f"vamp median: {vamp_median} ms")
-    bins = np.logspace(np.log10(min(time_list_plainmp)), np.log10(max(time_list_plainmp)), 50)
+
+    min_value = min(min(time_list_plainmp), min(time_list_vamp))
+    max_value = max(max(time_list_plainmp), max(time_list_vamp))
+
+    bins = np.logspace(np.log10(min_value), np.log10(max_value), 50)
     fig, ax = plt.subplots(figsize=(6, 3.2))
     ax.grid(which="both", axis="both", color="gray", linestyle="--", linewidth=0.5)
     ax.hist(
