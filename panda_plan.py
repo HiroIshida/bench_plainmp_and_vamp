@@ -10,7 +10,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--difficult", action="store_true", help="difficult")
     parser.add_argument("--internal", action="store_true", help="use internal measurement")
-    parser.add_argument("--res", type=int, help="resolution inverse", default=24)
+    parser.add_argument("--res", type=int, help="resolution inverse", default=32)
     args = parser.parse_args()
 
     ground = Box([2.0, 2.0, 0.05])

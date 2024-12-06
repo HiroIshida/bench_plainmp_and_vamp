@@ -47,7 +47,7 @@ python3 fetch_plan.py
 
 ```
 optional arguments:
-  --res  # int: (inverse) resolution of motion validation. Default is 24.
+  --res  # int: (inverse) resolution of motion validation. Default is 32.
   --internal  # flag: use internal measurement. Default is False.
 ```
 
