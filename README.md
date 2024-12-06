@@ -45,6 +45,13 @@ python3 fetch_plan.py
 ```
 \*same problem as in https://github.com/HiroIshida/plainmp/tree/master/example
 
+```
+optional arguments:
+  --res  # int: (inverse) resolution of motion validation. Default is 24.
+  --internal  # flag: use internal measurement. Default is False.
+```
+
+
 ## LICENSE NOTICE
 This repo contains code that interfaces with VAMP and is subject to 
 Polyform Noncommercial License restrictions due to its dependency on VAMP.
