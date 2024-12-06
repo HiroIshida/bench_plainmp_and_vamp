@@ -63,7 +63,7 @@ def benchmark_plainmp(
         ts = time.time()
         ret = solver.solve(problem)
         if internal:
-            time_list_plainmp.append(ret.time_elapsed * 1000)  # ms
+            time_list_plainmp.append(ret.ns_internal * 0.000001)  # nano to milli
         else:
             time_list_plainmp.append((time.time() - ts) * 1000)  # sec to ms
         assert ret.success
