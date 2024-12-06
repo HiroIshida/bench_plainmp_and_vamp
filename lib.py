@@ -44,6 +44,7 @@ def benchmark_plainmp(
     primitive_list: Sequence[Union[Box, Sphere, Cylinder]],
     resolution_inverse: int,
     n_sample: int,
+    internal: bool,
 ) -> List[float]:
 
     cst = spec.create_collision_const()
@@ -59,8 +60,12 @@ def benchmark_plainmp(
     set_log_level_none()
     time_list_plainmp = []
     for _ in range(n_sample):
+        ts = time.time()
         ret = solver.solve(problem)
-        time_list_plainmp.append(ret.time_elapsed * 1000)  # ms
+        if internal:
+            time_list_plainmp.append(ret.time_elapsed * 1000)  # ms
+        else:
+            time_list_plainmp.append((time.time() - ts) * 1000)  # sec to ms
         assert ret.success
     return time_list_plainmp
 
@@ -72,6 +77,7 @@ def benchmark_vamp(
     primitive_list: Sequence[Union[Box, Sphere, Cylinder]],
     resolution_inverse: int,
     n_sample: int,
+    internal: bool,
 ) -> List[float]:
 
     env = vamp.Environment()
@@ -109,10 +115,14 @@ def benchmark_vamp(
         sampler = vamp_module.halton()
         sampler.reset()
         sampler.skip(i)
-        time.time()
+        ts = time.time()
         res = planner_func(q_start, q_goal, env, plan_settings, sampler)
-        elapsed = res.nanoseconds
-        time_list_vamp.append(elapsed * 0.000001)  # nano to milli
+        elapsed = time.time() - ts
+        if internal:
+            elapsed = res.nanoseconds
+            time_list_vamp.append(elapsed * 0.000001)  # nano to milli
+        else:
+            time_list_vamp.append(elapsed * 1000)  # sec to ms
         assert res.solved
         vamp_results.append(np.array(res.path.numpy()))
     return time_list_vamp
@@ -125,16 +135,17 @@ def benchmark_plainmp_vs_vamp(
     primitive_list: Sequence[Union[Box, Sphere, Cylinder]],
     resolution_inverse: int,
     n_sample: int,
+    internal: bool,
 ) -> Tuple[List[float], List[float]]:
 
     print("start benchmarking plainmp...")
     time_list_plainmp = benchmark_plainmp(
-        spec, q_start, q_goal, primitive_list, resolution_inverse, n_sample
+        spec, q_start, q_goal, primitive_list, resolution_inverse, n_sample, internal
     )
 
     print("start benchmarking vamp...")
     time_list_vamp = benchmark_vamp(
-        spec, q_start, q_goal, primitive_list, resolution_inverse, n_sample
+        spec, q_start, q_goal, primitive_list, resolution_inverse, n_sample, internal
     )
 
     return time_list_plainmp, time_list_vamp

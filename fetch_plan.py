@@ -7,6 +7,7 @@ from skrobot.model.primitives import Box
 from lib import benchmark_plainmp_vs_vamp, plot_plainmp_vs_vamp
 
 parser = argparse.ArgumentParser()
+parser.add_argument("--internal", action="store_true", help="use internal measurement")
 parser.add_argument("--res", type=int, help="resolution inverse", default=24)
 args = parser.parse_args()
 
@@ -17,6 +18,6 @@ if __name__ == "__main__":
     table.translate([0.95, 0.0, 0.8])
     n_sample = 10000
     times_plainmp, times_vamp = benchmark_plainmp_vs_vamp(
-        FetchSpec(), q_start, q_goal, [table], args.res, n_sample
+        FetchSpec(), q_start, q_goal, [table], args.res, n_sample, args.internal
     )
     plot_plainmp_vs_vamp(times_plainmp, times_vamp, "fetch_table", args.res)

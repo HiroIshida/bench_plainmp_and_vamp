@@ -9,6 +9,7 @@ from lib import benchmark_plainmp_vs_vamp, plot_plainmp_vs_vamp
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--difficult", action="store_true", help="difficult")
+    parser.add_argument("--internal", action="store_true", help="use internal measurement")
     parser.add_argument("--res", type=int, help="resolution inverse", default=24)
     args = parser.parse_args()
 
@@ -34,7 +35,7 @@ if __name__ == "__main__":
     q_start = np.array([-1.54, 1.54, 0, -0.1, 0, 1.5, 0.81])
     q_goal = np.array([1.54, 1.54, 0, -0.1, 0, 1.5, 0.81])
     times_plainmp, times_vamp = benchmark_plainmp_vs_vamp(
-        PandaSpec(), q_start, q_goal, primitives, args.res, n_sample
+        PandaSpec(), q_start, q_goal, primitives, args.res, n_sample, args.internal
     )
     domain = "panda_dual_bars"
     if args.difficult:
