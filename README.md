@@ -50,7 +50,7 @@ optional arguments:
   --res  # int: (inverse) resolution of motion validation. Default is 32.
   --internal  # flag: use internal measurement. Default is False.
 ```
-
+NOTE: Specifically regarding VAMP, the --internal flag significantly affects the measurement results. This is because, in the VAMP implementation as of 2024/12/7, memory allocation for RRTConnect nodes is performed in batches at the beginning of the solve function. The raw measurement time includes this memory allocation time, while the internal measurement time does not. Consequently, the internal measurement time is much smaller than the raw measurement time.
 
 ## LICENSE NOTICE
 This repo contains code that interfaces with VAMP and is subject to 
