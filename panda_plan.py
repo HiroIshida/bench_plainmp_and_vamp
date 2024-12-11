@@ -4,7 +4,7 @@ import numpy as np
 from plainmp.robot_spec import PandaSpec
 from skrobot.model.primitives import Box, Cylinder
 
-from lib import benchmark_plainmp_vs_vamp, plot_plainmp_vs_vamp
+from lib import benchmark_plainmp_vs_vamp, plot_plainmp_vs_vamp, save_rawdata
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -41,3 +41,4 @@ if __name__ == "__main__":
     if args.difficult:
         domain += "_difficult"
     plot_plainmp_vs_vamp(times_plainmp, times_vamp, domain, args.res)
+    save_rawdata(times_plainmp, times_vamp, domain, args.res, args.internal)

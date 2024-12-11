@@ -4,7 +4,7 @@ import numpy as np
 from plainmp.robot_spec import FetchSpec
 from skrobot.model.primitives import Box
 
-from lib import benchmark_plainmp_vs_vamp, plot_plainmp_vs_vamp
+from lib import benchmark_plainmp_vs_vamp, plot_plainmp_vs_vamp, save_rawdata
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--internal", action="store_true", help="use internal measurement")
@@ -21,3 +21,4 @@ if __name__ == "__main__":
         FetchSpec(), q_start, q_goal, [table], args.res, n_sample, args.internal
     )
     plot_plainmp_vs_vamp(times_plainmp, times_vamp, "fetch_table", args.res)
+    save_rawdata(times_plainmp, times_vamp, "fetch_table", args.res, args.internal)
