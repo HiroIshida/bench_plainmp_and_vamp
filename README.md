@@ -1,7 +1,55 @@
-## [WIP] Benchmark plainmp and VAMP
-For plainmp implementation, please refer to the following repository: https://github.com/HiroIshida/plainmp
-For VAMP implementation, please refer to the following repository: https://github.com/KavrakiLab/vamp
-To change resolution, please modify the VAMP source code a bit and re-compile it.
+## Benchmark plainmp and VAMP
+TL;DR: on x86_64 (with 256-bit AVX), VAMP is significantly faster than plainmp
+On ARM (with 128-bit NEON), although it is case-by-case VAMP and plainmp seem to have similar but maybe slightly on the side of VAMP
+
+## bechmark result (--internal)
+\* all the values are median execution times in milliseconds (ms)
+\* resolution 20 for typical settings for my demo, 32 for the default resolution of VAMP
+\* plainmp: https://github.com/HiroIshida/plainmp (v0.1.0) @83de8d5
+\* VAMP: https://github.com/KavrakiLab/vamp (v0.3.0) @0d13c50
+
+On AMD Ryzen 7 7840HS for x86_64
+| Scene Name | plainmp (ms) | vamp (ms) |
+|------------|--------------|-----------|
+| panda_dual_bars_res20 | 0.206 | 0.153 |
+| panda_dual_bars_res32 | 0.298 | 0.198 |
+| panda_dual_bars_difficult_res20 | 0.835 | 0.856 |
+| panda_dual_bars_difficult_res32 | 1.133 | 1.048 |
+| fetch_table_res20 | 0.773 | 0.197 |
+| fetch_table_res32 | 1.164 | 0.240 |
+| fetch_many_spheres_res20 | 0.296 | 0.029 |
+| fetch_many_spheres_res32 | 0.444 | 0.035 |
+
+On ARM Neoverse-N1 for aarch64
+| Scene Name | plainmp (ms) | vamp (ms) |
+|------------|--------------|-----------|
+| panda_dual_bars_res20 | 0.404 | 0.686 |
+| panda_dual_bars_res32 | 0.557 | 1.053 |
+| panda_dual_bars_difficult_res20 | 1.451 | 3.329 |
+| panda_dual_bars_difficult_res32 | 2.059 | 4.968 |
+| fetch_table_res20 | 1.349 | 0.608 |
+| fetch_table_res32 | 1.881 | 0.860 |
+| fetch_many_spheres_res20 | 0.563 | 0.129 |
+| fetch_many_spheres_res32 | 0.801 | 0.184 |
+
+Note: All values are median execution times in milliseconds (ms).
+
+## Usage
+```bash
+python3 panda_plan.py --internal
+python3 panda_plan.py --difficult --internal
+python3 fetch_plan.py --interanl
+python3 fetch_many_spheres.py --internal
+```
+\* panda_plan and fetch_plan are the same in https://github.com/HiroIshida/plainmp/tree/master/example
+```
+optional arguments:
+  --res  # int: (inverse) resolution of motion validation. Default is 32.
+  --internal  # flag: use internal measurement. Default is False.
+```
+NOTE: The --internal flag in VAMP significantly affects measurements since memory allocation for RRTConnect nodes (0.2ms) is included in raw times but excluded from internal times. As this overhead is an API design consideration rather than algorithmic, comparing results with --internal seems to be more fair.
+
+## How to change resolution of VAMP
 The default (inverse) resolution is 32. To change the resolution to 1/24 of fetch and panda robots, for example, you need to modify the following files:
 ```diff
 diff --git a/src/impl/vamp/robots/fetch.hh b/src/impl/vamp/robots/fetch.hh
@@ -29,28 +77,9 @@ index 61672c9..fc11a8e 100644
 +        static constexpr auto resolution = 24;
          static constexpr auto n_spheres = panda::n_spheres;
          static constexpr auto space_measure = panda::space_measure;
-```
- 
+``` 
 Then, re-compile VAMP.
 
-This benchmark is still a work in progress.
-The benchmark may unintentionally favor one implementation over the other, or have other issues.
-Also, I need to double-check the fairness regarding the resolution in motion validation.
-
-## Usage
-```bash
-python3 panda_plan.py
-python3 panda_plan.py --difficult
-python3 fetch_plan.py
-```
-\*same problem as in https://github.com/HiroIshida/plainmp/tree/master/example
-
-```
-optional arguments:
-  --res  # int: (inverse) resolution of motion validation. Default is 32.
-  --internal  # flag: use internal measurement. Default is False.
-```
-NOTE: Specifically regarding VAMP, the --internal flag significantly affects the measurement results. This is because, in the VAMP implementation as of 2024/12/7, memory allocation for RRTConnect nodes is performed in batches at the beginning of the solve function. The raw measurement time includes this memory allocation time, while the internal measurement time does not. Consequently, the internal measurement time is much smaller than the raw measurement time.
 
 ## LICENSE NOTICE
 This repo contains code that interfaces with VAMP and is subject to 
