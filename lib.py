@@ -175,6 +175,7 @@ def plot_plainmp_vs_vamp(
     domain_name: str,
     resolution_inverse: int,
     internal: bool,
+    interactive: bool = False,
 ) -> None:
     plainmp_median = np.median(time_list_plainmp)
     print(f"plainmp median: {plainmp_median} ms")
@@ -205,14 +206,17 @@ def plot_plainmp_vs_vamp(
     ax.set_xticklabels(["0.1", "1", "10"], fontsize=14)
     ax.legend(fontsize=10)
     plt.tight_layout()
-    figure_path = Path.cwd() / "figures"
-    figure_path = Path("figures")
-    figure_path.mkdir(exist_ok=True)
-    if internal:
-        file_path = (
-            figure_path / f"plainmp_vs_vamp_{domain_name}_res{resolution_inverse}_internal.png"
-        )
+    if interactive:
+        plt.show()
     else:
-        file_path = figure_path / f"plainmp_vs_vamp_{domain_name}_res{resolution_inverse}.png"
-    print(f"save to {file_path}")
-    plt.savefig(file_path, dpi=200)
+        figure_path = Path.cwd() / "figures"
+        figure_path = Path("figures")
+        figure_path.mkdir(exist_ok=True)
+        if internal:
+            file_path = (
+                figure_path / f"plainmp_vs_vamp_{domain_name}_res{resolution_inverse}_internal.png"
+            )
+        else:
+            file_path = figure_path / f"plainmp_vs_vamp_{domain_name}_res{resolution_inverse}.png"
+        print(f"save to {file_path}")
+        plt.savefig(file_path, dpi=200)
