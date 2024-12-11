@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
-
 ENV DEBIAN_FRONTEND=noninteractive
+ARG VAMP_RESOLUTION=32
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -31,29 +31,20 @@ WORKDIR /workspace
 RUN git clone https://github.com/KavrakiLab/vamp.git
 WORKDIR /workspace/vamp
 
-# for changing resolution
-# RUN sed -i 's/static constexpr auto resolution = 32;/static constexpr auto resolution = 24;/' src/impl/vamp/robots/fetch.hh && \
-#     sed -i 's/static constexpr auto resolution = 32;/static constexpr auto resolution = 24;/' src/impl/vamp/robots/panda.hh
-
+RUN pip install . -v  # run this first to install dependencies (for caching)
+RUN sed -i "s/static constexpr auto resolution = 32;/static constexpr auto resolution = $VAMP_RESOLUTION;/" src/impl/vamp/robots/fetch.hh && \
+    sed -i "s/static constexpr auto resolution = 32;/static constexpr auto resolution = $VAMP_RESOLUTION;/" src/impl/vamp/robots/panda.hh
 RUN pip install . -v
 
+RUN python3 -c "from skrobot.models.panda import Panda; Panda()"   # to download the panda model
+RUN python3 -c "from skrobot.models.fetch import Fetch; Fetch()"   # to download the fetch model
+
 WORKDIR /workspace
-RUN pip install matplotlib
 RUN git clone https://github.com/HiroIshida/bench_plainmp_and_vamp.git
+RUN pip install matplotlib
 
 WORKDIR /workspace/bench_plainmp_and_vamp
 
-# Create entrypoint script
-RUN echo '#!/bin/bash\n\
-echo "Running Panda benchmark..."\n\
-python3 /workspace/bench_plainmp_and_vamp/panda_plan.py\n\
-python3 /workspace/bench_plainmp_and_vamp/panda_plan.py --internal\n\
-echo "Running Panda difficult benchmark..."\n\
-python3 /workspace/bench_plainmp_and_vamp/panda_plan.py --difficult\n\
-python3 /workspace/bench_plainmp_and_vamp/panda_plan.py --difficult --internal\n\
-echo "Running Fetch benchmark..."\n\
-python3 /workspace/bench_plainmp_and_vamp/fetch_plan.py\n\
-python3 /workspace/bench_plainmp_and_vamp/fetch_plan.py --internal' > /workspace/run_benchmarks.sh && \
-chmod +x /workspace/run_benchmarks.sh
-
-ENTRYPOINT ["/workspace/run_benchmarks.sh"]
+RUN chmod +x /workspace/bench_plainmp_and_vamp/run_bench.sh
+ENV VAMP_RESOLUTION=${VAMP_RESOLUTION}
+CMD /workspace/bench_plainmp_and_vamp/run_bench.sh "$VAMP_RESOLUTION"

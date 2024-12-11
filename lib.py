@@ -164,7 +164,7 @@ def save_rawdata(
     else:
         file_name = f"{domain_name}_res{resolution_inverse}.json"
     print(f"save to {file_name}")
-    file_path = Path("./rawdata") / file_name
+    file_path = Path.cwd() / "rawdata" / file_name
     with open(file_path, "w") as f:
         json.dump({"plainmp": time_list_plainmp, "vamp": time_list_vamp}, f)
 
@@ -205,10 +205,13 @@ def plot_plainmp_vs_vamp(
     ax.set_xticklabels(["0.1", "1", "10"], fontsize=14)
     ax.legend(fontsize=10)
     plt.tight_layout()
+    figure_path = Path.cwd() / "figures"
     figure_path = Path("figures")
     figure_path.mkdir(exist_ok=True)
     if internal:
-        file_path = figure_path / f"plainmp_vs_vamp_{domain_name}_res{resolution_inverse}_internal.png"
+        file_path = (
+            figure_path / f"plainmp_vs_vamp_{domain_name}_res{resolution_inverse}_internal.png"
+        )
     else:
         file_path = figure_path / f"plainmp_vs_vamp_{domain_name}_res{resolution_inverse}.png"
     print(f"save to {file_path}")

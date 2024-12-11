@@ -1,0 +1,17 @@
+version: '3'
+services:
+  benchmark:
+    image: plainmp_bench
+    volumes:
+      - type: bind
+        source: ./rawdata
+        target: /workspace/bench_plainmp_and_vamp/rawdata
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./figures
+        target: /workspace/bench_plainmp_and_vamp/figures
+        bind:
+          create_host_path: true
+    environment:
+      - HOME=/tmp

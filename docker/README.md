@@ -1,10 +1,12 @@
 build
-```
-docker build -t plainmp_bench .
+```bash
+docker build -t plainmp_bench --build-arg VAMP_RESOLUTION=32 .
 ```
 benchmark # with command
+```bash
+docker compose up
 ```
-docker run -it --rm plainmp_bench  \
-    /bin/bash -c "cd bench_plainmp_and_vamp && ./run_bench.sh"
-
+make tarball before upload
+```bash
+tar cvf summary.tar rawdata figures
 ```
