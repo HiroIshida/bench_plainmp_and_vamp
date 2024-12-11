@@ -40,5 +40,5 @@ if __name__ == "__main__":
     domain = "panda_dual_bars"
     if args.difficult:
         domain += "_difficult"
-    plot_plainmp_vs_vamp(times_plainmp, times_vamp, domain, args.res)
+    plot_plainmp_vs_vamp(times_plainmp, times_vamp, domain, args.res, args.internal)
     save_rawdata(times_plainmp, times_vamp, domain, args.res, args.internal)

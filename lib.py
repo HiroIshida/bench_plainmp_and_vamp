@@ -163,6 +163,7 @@ def save_rawdata(
         file_name = f"{domain_name}_res{resolution_inverse}_internal.json"
     else:
         file_name = f"{domain_name}_res{resolution_inverse}.json"
+    print(f"save to {file_name}")
     file_path = Path("./rawdata") / file_name
     with open(file_path, "w") as f:
         json.dump({"plainmp": time_list_plainmp, "vamp": time_list_vamp}, f)
@@ -173,6 +174,7 @@ def plot_plainmp_vs_vamp(
     time_list_vamp: List[float],
     domain_name: str,
     resolution_inverse: int,
+    internal: bool,
 ) -> None:
     plainmp_median = np.median(time_list_plainmp)
     print(f"plainmp median: {plainmp_median} ms")
@@ -205,6 +207,9 @@ def plot_plainmp_vs_vamp(
     plt.tight_layout()
     figure_path = Path("figures")
     figure_path.mkdir(exist_ok=True)
-    file_path = figure_path / f"plainmp_vs_vamp_{domain_name}_res{resolution_inverse}.png"
+    if internal:
+        file_path = figure_path / f"plainmp_vs_vamp_{domain_name}_res{resolution_inverse}_internal.png"
+    else:
+        file_path = figure_path / f"plainmp_vs_vamp_{domain_name}_res{resolution_inverse}.png"
     print(f"save to {file_path}")
     plt.savefig(file_path, dpi=200)

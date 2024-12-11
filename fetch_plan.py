@@ -20,5 +20,5 @@ if __name__ == "__main__":
     times_plainmp, times_vamp = benchmark_plainmp_vs_vamp(
         FetchSpec(), q_start, q_goal, [table], args.res, n_sample, args.internal
     )
-    plot_plainmp_vs_vamp(times_plainmp, times_vamp, "fetch_table", args.res)
+    plot_plainmp_vs_vamp(times_plainmp, times_vamp, "fetch_table", args.res, args.internal)
     save_rawdata(times_plainmp, times_vamp, "fetch_table", args.res, args.internal)
