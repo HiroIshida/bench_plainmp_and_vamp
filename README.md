@@ -1,11 +1,13 @@
 ## Benchmark plainmp and VAMP
-TL;DR: on x86_64 (with 256-bit AVX), VAMP is significantly faster than plainmp
-On ARM (with 128-bit NEON), although it is case-by-case VAMP and plainmp seem to have similar but maybe slightly on the side of VAMP
+TL;DR: On x86_64 (with 256-bit AVX), VAMP is significantly faster than plainmp. On ARM (with 128-bit NEON), although it is case-by-case VAMP and plainmp seem to have similar but maybe slightly on the side of VAMP.
 
 ## bechmark result (--internal)
 \* all the values are median execution times in milliseconds (ms)
+
 \* resolution 20 for typical settings for my demo, 32 for the default resolution of VAMP
+
 \* plainmp: https://github.com/HiroIshida/plainmp (v0.1.0) @83de8d5
+
 \* VAMP: https://github.com/KavrakiLab/vamp (v0.3.0) @0d13c50
 
 On AMD Ryzen 7 7840HS for x86_64
